@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Website</title>
+    <script>
+        // Password and settings
+        const PASSWORD = "1531";
+        const MAX_ATTEMPTS = 5;
+        const LOCKOUT_TIME = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+
+        // Local storage keys
+        const ATTEMPTS_KEY = "passwordAttempts";
+        const LOCKOUT_KEY = "lockoutTime";
+
+        function checkAccess() {
+            const currentTime = new Date().getTime();
+            const lockoutTime = localStorage.getItem(LOCKOUT_KEY);
+            let attempts = localStorage.getItem(ATTEMPTS_KEY);
+
+            // Initialize attempts if not set
+            if (attempts === null) attempts = 0;
+
+            if (lockoutTime && currentTime < lockoutTime) {
+                alert(`You are locked out. Please try again later.`);
+                return false;
+            }
+
+            while (attempts < MAX_ATTEMPTS) {
+                const userInput = prompt("Enter the password to access this website:");
+                if (userInput === PASSWORD) {
+                    alert("Access granted!");
+                    localStorage.removeItem(ATTEMPTS_KEY);
+                    localStorage.removeItem(LOCKOUT_KEY);
+                    return true;
+                } else {
+                    attempts++;
+                    localStorage.setItem(ATTEMPTS_KEY, attempts);
+                    alert("Incorrect password.");
+                }
+            }
+
+            // If maximum attempts exceeded
+            alert("Too many incorrect attempts. You are locked out for 2 hours.");
+            localStorage.setItem(LOCKOUT_KEY, currentTime + LOCKOUT_TIME);
+            localStorage.setItem(ATTEMPTS_KEY, 0);
+            return false;
+        }
+
+        // Run the check when the website loads
+        document.addEventListener("DOMContentLoaded", () => {
+            if (!checkAccess()) {
+                document.body.innerHTML = "<h1>Access Denied</h1>";
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Welcome to My Website</h1>
+    <p>If you see this, you entered the correct password.</p>
+</body>
+</html>
