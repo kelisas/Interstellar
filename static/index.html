@@ -51,3 +51,26 @@
     <!-- DO NOT REMOVE-->
   </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Protected Website</title>
+    <script>
+        // Configuration
+        const PASSWORD = "1531";
+        const MAX_ATTEMPTS = 5;
+        const LOCKOUT_TIME = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+
+        // Local Storage keys
+        const ATTEMPTS_KEY = "passwordAttempts";
+        const LOCKOUT_KEY = "lockoutTime";
+
+        function checkAccess() {
+            const currentTime = new Date().getTime();
+            const lockoutTime = localStorage.getItem(LOCKOUT_KEY);
+            let attempts = parseInt(localStorage.getItem(ATTEMPTS_KEY)) || 0;
+
+            // Check if the user is currently locked out
+            if (loc
